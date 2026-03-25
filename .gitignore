@@ -1,0 +1,20 @@
+# 忽略 Keil 编译垃圾
+*.o
+*.crf
+*.d
+*.axf
+*.htm
+*.dep
+*.lnp
+*.sct
+*.map
+*.lst
+*_uvprojx.bak
+*_uvoptx.bak
+*.Log
+*.iex
+Objects/
+Listings/
+
+# 忽略 VS Code 配置
+.vscode/
