@@ -1,9 +1,6 @@
 ![Language](https://img.shields.io/badge/Language-C-blue)
 ![Platform](https://img.shields.io/badge/Platform-STM32-orange)
 ![Framework](https://img.shields.io/badge/Framework-LVGL-green)
-# 基于 STM32 与 LVGL 的自行车智能码表
-
-这是一个从零开始手敲的嵌入式 GUI 项目。本项目记录了从前期 Windows 端 LVGL 模拟器开发、核心性能问题攻坚，到最终移植至 STM32 硬件平台并完善底层驱动的完整过程。文档旨在清晰复盘项目的实现思路、遇到的技术难点及解决方案。
 
 ## 1. 项目功能与硬件架构
 
@@ -11,7 +8,7 @@
 
 ### 1.1 主要功能
 * **基础交互**：基于 LVGL 实现彩色 UI 界面。
-* **本地化支持**：支持中英文静态翻译切换，以及浅色，深色模式的动态切换。
+* **本地化支持**：支持中英文静态翻译切换，以及浅色/深色模式的动态切换。
 * **骑行数据**：实时显示当前的行驶信息（速度、电量、卫星数等）。
 * **地图导航**：支持局部的 GPS 地图滚动与路书显示。
 
@@ -23,7 +20,7 @@
   * GPS 模块：ATGM336H（中科微国产芯片）。
 * **供电系统**：3.7V 三元锂电池。
 
----
+ 
 
 ## 2. 第一阶段：Windows 端 LVGL 模拟与 UI 开发
 
@@ -41,7 +38,7 @@
 * **深/浅色模式切换**：通过给开关控件绑定回调函数，触发时重绘容器的背景颜色。
 * **多语言翻译**：没有使用复杂的外部字库解析，而是利用 LVGL 的静态翻译机制，通过给不同语言的内容打上 `tag` 标签，配合下拉菜单的回调函数实现语言切换。
 
----
+-- 
 
 ## 3. 第二阶段：核心技术难点与解决方案
 
@@ -65,12 +62,7 @@
   1. 使用 LVGL 自带的 `lv_async_call()` 函数，将数据修改的动作委托给主循环，在下一次调用 `timer_handler` 之前安全处理。
   2. 引入 FreeRTOS 操作系统，使用信号量（Semaphore）或互斥锁（Mutex），严格控制 UI 更新任务与数据读取任务的时序，彻底解决线程安全问题。
 
-<<<<<<< HEAD
----
-
-=======
---- 
->>>>>>> parent of 0ad5fe6 (Update README.md)
+---  
 ## 4. 第三阶段：硬件移植与底层驱动开发
 
 PC 端逻辑跑通后，开始向 STM32 裸机环境移植。
@@ -91,4 +83,66 @@ PC 端逻辑跑通后，开始向 STM32 裸机环境移植。
 
 ## 5. 总结
 
+
+
 本项目避开了直接在硬件上低效试错的常规流程，采用了“PC 模拟开发UI逻辑 -> 攻克核心算法与资源瓶颈 -> 移植硬件并补全底层驱动”的标准嵌入式软件开发范式。通过实际解决大图片缓存、SPI 带宽限制以及 LVGL 线程安全等问题，加深了对 MCU 体系结构与 GUI 框架底层运行机制的理解。
+
+
+# 🚲 基于 STM32 + LVGL 的智能自行车码表
+
+本项目是一款高性能嵌入式自行车码表，实现了从地图渲染、GPS 轨迹模拟到多语言主题切换的完整系统。
+
+---
+
+## 📺 全功能实机演示 (Video Demo)
+
+<div align="center">
+  <video src="images/demo_video.mp4" width="100%" controls poster="images/hw_map_view.jpg">
+    您的浏览器不支持播放该视频，请在仓库中查看。
+  </video>
+  <p><i>实机演示：包含按键交互、地图滑动、语言切换与主题切换</i></p>
+</div>
+
+---
+
+## 🚀 核心交互功能 (Interaction Highlights)
+
+| 语言无缝切换 (Language) | 主题动态重绘 (Dark Mode) |
+| :---: | :---: |
+| ![语音切换](images/lang_switch.gif) | ![主题切换](images/theme_switch.gif) |
+| 支持中/英动态字典映射 | 支持一键全局重绘 UI 容器 |
+
+---
+
+## 🛠️ 开发历程：从模拟到实装
+
+### 1. LVGL 模拟器验证 (Simulator Stage)
+在硬件打样前，基于 PC 端模拟环境完成了 90% 的 UI 逻辑编写。
+
+| 设置界面 | 通用数据页 | 初期原型 |
+| :---: | :---: | :---: |
+| ![模拟设置](images/sim_settings.png) | ![模拟数据](images/sim_data_view.png) | ![初期Demo](images/early_demo.png) |
+
+### 2. 地图资源处理 (Map Toolchain)
+使用定制化工具获取瓦片地图数据，并将其转化为适合嵌入式存储的格式。
+![地图工具](images/map_tool.png)
+
+---
+
+## 🔌 硬件架构 (Hardware Architecture)
+
+| 硬件背面结构 | 最终实机效果 |
+| :---: | :---: |
+| ![硬件背面](images/hardware_back.jpg) | ![实机效果](images/hw_dark_theme.jpg) |
+| **主控**: STM32 <br> **GPS**: ATGM336H <br> **Power**: 500mAh Li-Po | **屏幕**: 电容触摸屏 <br> **交互**: 实体按键 + 触摸屏 |
+
+---
+
+## 📦 如何使用 (Getting Started)
+1. 克隆仓库。
+2. 使用 Keil MDK-ARM 打开 `MDK-ARM/speed_meter.uvprojx`。
+3. 编译并烧录至开发板。
+# 基于 STM32 与 LVGL 的自行车智能码表
+
+这是一个从零开始手敲的嵌入式 GUI 项目。本项目记录了从前期 Windows 端 LVGL 模拟器开发、核心性能问题攻坚，到最终移植至 STM32 硬件平台并完善底层驱动的完整过程。文档旨在清晰复盘项目的实现思路、遇到的技术难点及解决方案。
+
