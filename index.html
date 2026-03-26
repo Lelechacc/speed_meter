@@ -6,111 +6,129 @@
     <title>STM32 + LVGL 智能自行车码表 | 项目展示</title>
     <style>
         :root { 
-            --primary: #ff9a9e;     /* 马卡龙粉 */
-            --secondary: #a1c4fd;   /* 婴儿蓝 */
-            --accent: #a8edea;      /* 薄荷青 */
-            --text-main: #4a4a4a;   /* 深灰字体，保证阅读清晰 */
-            --text-muted: #718096;
+            --bg-main: #F5F5F7;      /* 苹果标志性的干净浅灰底色 */
+            --card-bg: #FFFFFF;      /* 纯白卡片背景 */
+            --text-main: #1D1D1F;    /* 近乎黑色的深灰，阅读极佳 */
+            --text-muted: #86868B;   /* 辅助文字灰 */
+            --accent-blue: #007AFF;  /* 苹果标准蓝色 */
+            --border-color: #D2D2D7; /* 极细分割线颜色 */
         }
         
-        /* 糖果色渐变背景 */
+        /* 亮色调、干净的 iMac 风格背景 */
         body { 
-            font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            /* 梦幻紫蓝渐变 */
-            background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
-            background-attachment: fixed;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; 
+            background: var(--bg-main);
             color: var(--text-main); 
-            line-height: 1.7; 
+            line-height: 1.5; 
             margin: 0; 
             padding: 0; 
+            -webkit-font-smoothing: antialiased; /* 文字抗锯齿，更清晰 */
         }
 
-        .container { max-width: 960px; margin: 0 auto; padding: 50px 20px; }
+        .container { max-width: 1080px; margin: 0 auto; padding: 60px 30px; }
         
-        /* 顶部大标题样式 */
-        header { text-align: center; padding-bottom: 40px; }
+        /* 顶部标题 - 极简、左对齐，像产品主页 */
+        header { text-align: left; padding-bottom: 50px; border-bottom: 1px solid rgba(0,0,0,0.1); }
         h1 { 
-            font-size: 2.8em; 
-            color: #2d3748;
-            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.6);
-            margin-bottom: 15px; 
-            letter-spacing: 1px;
+            font-size: 2.5em; 
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0 0 10px 0; 
+            letter-spacing: -0.5px;
         }
-        header p { color: var(--text-main); font-size: 1.1em; font-weight: 500; }
-        .badges { margin: 25px 0; }
-        .badges img { margin: 0 6px; height: 28px; border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header p { color: var(--text-muted); font-size: 1.2em; font-weight: 400; margin: 0; }
+        .badges { margin: 25px 0 0 0; text-align: left; }
+        .badges img { margin-right: 8px; height: 26px; border-radius: 4px; }
         
-        /* 视频带毛玻璃发光边框 */
+        /* 全功能演示 - 严格限制大小，精致展示 */
+        .video-section { margin: 60px 0; text-align: center; }
         .video-box { 
-            background: rgba(255, 255, 255, 0.2); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: var(--card-bg); 
             border-radius: 20px; 
             overflow: hidden; 
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15); 
-            margin: 50px 0; 
-            border: 2px solid rgba(255,255,255,0.5); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* 极轻的阴影，增加深度 */
+            border: 1px solid rgba(0,0,0,0.05); 
             padding: 10px;
+            display: inline-block; /* 核心：让盒子包裹视频内容，而非强行全宽 */
+            max-width: 600px; /* 核心：在27寸屏幕上限制最大宽度，保证精致 */
+            margin: 0 auto;
         }
         video { width: 100%; display: block; border-radius: 12px; }
 
-        /* 章节标题 */
+        /* 通用章节标题 - 干净、有呼吸感 */
         h2 { 
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.4);
-            padding: 8px 20px;
-            border-radius: 30px;
-            color: #2b6cb0; 
-            margin-top: 60px; 
-            font-size: 1.6em;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid rgba(255,255,255,0.6);
+            color: var(--text-main); 
+            font-size: 2em;
+            font-weight: 600;
+            margin-top: 80px; 
+            margin-bottom: 30px;
+            text-align: left;
+            letter-spacing: -0.2px;
         }
-        h3 { color: #553c9a; margin-top: 35px; font-size: 1.3em; }
+        h3 { color: var(--text-main); margin-top: 0; font-size: 1.3em; font-weight: 600; }
 
-        /* 核心毛玻璃卡片 (Glassmorphism) */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 30px 0; }
-        .card { 
-            background: rgba(255, 255, 255, 0.35); 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        /* 便当盒网格布局 (Bento Grid) - 用于核心亮点和功能 */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin: 30px 0; }
+        .bento-item { 
+            background: var(--card-bg); 
+            border-radius: 20px; 
+            padding: 30px; 
+            text-align: center; 
+            border: 1px solid rgba(0,0,0,0.05); 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease; 
+        }
+        .bento-item:hover { 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+        }
+        .bento-item img { width: 100%; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(0,0,0,0.05); }
+        .bento-item p { font-size: 1.1em; color: var(--text-main); margin: 0; font-weight: 500; }
+
+        /* 功能与选型 - 使用 structured list */
+        .structured-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .list-card {
+            background: var(--card-bg); 
+            border-radius: 20px; 
+            padding: 30px; 
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        ul { padding-left: 18px; margin: 0; }
+        li { margin-bottom: 12px; color: var(--text-main); font-size: 1.05em;}
+        li b { color: var(--accent-blue); }
+
+        /* 技术详情列表框（更清爽的科技感） */
+        .tech-box { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(0,0,0,0.05); 
+            margin: 25px 0; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+        .tech-box h3 { color: var(--accent-blue); margin-bottom: 10px; }
+        .tech-box p { color: var(--text-main); margin-bottom: 0;}
+        code { background: rgba(0,122,255,0.06); padding: 4px 10px; border-radius: 6px; color: var(--accent-blue); font-family: monospace; font-weight: bold; }
+        
+        /* 模拟器与硬件展示 - 3列便当网格 */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 30px 0; }
+        .grid-3-item { 
+            background: var(--card-bg); 
             border-radius: 16px; 
             padding: 20px; 
             text-align: center; 
-            border: 1px solid rgba(255, 255, 255, 0.6); 
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-            transition: all 0.3s ease; 
+            border: 1px solid rgba(0,0,0,0.05); 
         }
-        .card:hover { 
-            transform: translateY(-8px); 
-            background: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 15px 35px rgba(31, 38, 135, 0.15);
-        }
-        .card img { width: 100%; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .card p { font-size: 1em; color: #2d3748; margin: 0; font-weight: 600; }
+        .grid-3-item img { width: 100%; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.05); }
+        .grid-3-item p { font-size: 0.95em; color: var(--text-main); margin: 0; font-weight: 500; }
 
-        /* 技术详情列表框（通透果冻感） */
-        .tech-box { 
-            background: rgba(255, 255, 255, 0.3); 
-            backdrop-filter: blur(10px);
-            padding: 25px; 
-            border-radius: 16px; 
-            border-left: 5px solid #ff9a9e; 
-            margin: 25px 0; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-top: 1px solid rgba(255,255,255,0.6);
-            border-right: 1px solid rgba(255,255,255,0.6);
-        }
-        .tech-box p { color: #4a5568; }
-        code { background: rgba(255,255,255,0.6); padding: 4px 10px; border-radius: 8px; color: #d53f8c; font-weight: bold; }
-        
-        ul { padding-left: 20px; }
-        li { margin-bottom: 10px; color: #4a5568; }
-        li b { color: #2b6cb0; }
-
-        footer { text-align: center; padding: 60px 0 30px; color: #718096; font-size: 0.95em; margin-top: 50px;}
-        footer a { color: #553c9a; text-decoration: none; font-weight: bold; transition: 0.2s; }
-        footer a:hover { color: #ff9a9e; }
+        footer { text-align: center; padding: 60px 0 30px; color: var(--text-muted); font-size: 1em; border-top: 1px solid var(--border-color); margin-top: 80px;}
+        footer a { color: var(--accent-blue); text-decoration: none; font-weight: 600; transition: 0.2s; }
+        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -118,7 +136,7 @@
 <div class="container">
     <header>
         <h1>🚲 STM32 + LVGL 智能自行车码表</h1>
-        <p>从底层驱动到图形界面的全栈嵌入式实践 | 拒绝纸上谈兵</p>
+        <p>全栈嵌入式实践 | 从底层驱动到图形界面开发复盘</p>
         <div class="badges">
             <img src="https://img.shields.io/badge/Language-C-blue" alt="C">
             <img src="https://img.shields.io/badge/Platform-STM32-orange" alt="STM32">
@@ -126,8 +144,7 @@
         </div>
     </header>
 
-    <section>
-        <h2>📺 全功能实机演示</h2>
+    <section class="video-section">
         <div class="video-box">
             <video controls poster="images/实物路书页面.jpg">
                 <source src="images/demo_video.mp4" type="video/mp4">
@@ -137,13 +154,13 @@
     </section>
 
     <section>
-        <h2>🚀 核心交互亮点</h2>
+        <h2>🚀 核心亮点</h2>
         <div class="grid">
-            <div class="card">
+            <div class="bento-item">
                 <img src="images/语音切换.gif" alt="语言切换">
                 <p>中英文静态翻译无缝切换</p>
             </div>
-            <div class="card">
+            <div class="bento-item">
                 <img src="images/主题一键切换.gif" alt="主题切换">
                 <p>深色/浅色模式动态重绘UI</p>
             </div>
@@ -151,19 +168,19 @@
     </section>
 
     <section>
-        <h2>⚙️ 项目功能与硬件架构</h2>
-        <div class="grid">
-            <div class="card" style="text-align: left;">
-                <h3>1.1 主要功能</h3>
+        <h2>⚙️ 功能与架构</h2>
+        <div class="structured-list">
+            <div class="list-card">
+                <h3>主要功能</h3>
                 <ul>
-                    <li><b>基础交互</b>：基于 LVGL 实现彩色 UI 界面。</li>
+                    <li><b>基础交互</b>：基于 LVGL 实现彩色 UI。</li>
                     <li><b>本地化支持</b>：中英文切换 & 深浅模式实时切换。</li>
                     <li><b>骑行数据</b>：实时显示速度、电量、卫星数等。</li>
-                    <li><b>地图导航</b>：支持局部 GPS 地图滚动与路书显示。</li>
+                    <li><b>地图导航</b>：支持局部 GPS 地图滚动与路书。</li>
                 </ul>
             </div>
-            <div class="card" style="text-align: left;">
-                <h3>1.2 核心硬件选型</h3>
+            <div class="list-card">
+                <h3>硬件选型</h3>
                 <ul>
                     <li><b>主控</b>：STM32F405 / STM32H750</li>
                     <li><b>屏幕</b>：240*320 TFT (ST7789) + 电容触摸 (CST)</li>
@@ -175,48 +192,47 @@
     </section>
 
     <section>
-        <h2>🔥 核心技术难点与解决方案</h2>
+        <h2>🔥 技术难点与解决方案</h2>
         
         <div class="tech-box">
-            <h3>难点一：地图动态铺设与 SPI 性能瓶颈</h3>
-            <p>实现地图无缝滚动需采用“九宫格”加载机制。在算力受限的情况下，单张 256x256 的图片在 30Hz 刷新率下需要 3MB/s 的数据吞吐量。F405 的 CPU 直接推屏会出现严重卡顿。</p>
-            <p><b>解决方案：</b> 在硬件端考虑利用 <b>DMA2D 硬件图形加速器</b> 搬运数据，彻底解放 CPU 算力，实现地图画面的丝滑滑动。</p>
+            <h3>难点一：地图动态铺设与性能瓶颈</h3>
+            <p>实现地图滚动需采用“九宫格”加载机制。单张 256x256 图片在 30Hz 刷新率下需 3MB/s 吞吐量。F405 CPU 直接推屏卡顿。</p>
+            <p><b>解决方案：</b> 在硬件端利用 <b>DMA2D 硬件图形加速器</b> 搬运数据，彻底解放 CPU，实现丝滑滑动。</p>
         </div>
 
         <div class="tech-box">
-            <h3>难点二：数据绑定的线程安全问题</h3>
-            <p>在定时器中断 (<code>timer_handler</code>) 中直接修改 UI 绑定的主题数据，会导致 LVGL 渲染线程冲突，极易引发单片机 <code>HardFault</code> 死机。</p>
-            <p><b>解决方案：</b> 引入 <code>lv_async_call()</code> 将修改动作委托给主循环；或引入 <b>FreeRTOS</b>，使用互斥锁（Mutex）严格控制时序。</p>
+            <h3>难点二：数据绑定的线程安全</h3>
+            <p>在定时器中断 (<code>timer_handler</code>) 中直接修改 UI 数据会导致 <code>HardFault</code>。</p>
+            <p><b>解决方案：</b> 引入 <code>lv_async_call()</code> 机制；或使用 <b>FreeRTOS</b> 的互斥锁（Mutex）严格控制时序。</p>
         </div>
     </section>
 
     <section>
         <h2>💻 PC 模拟器开发阶段</h2>
-        <p style="color: var(--text-main); font-weight: 500; text-align: center; margin-bottom: 30px;">前期 90% 的交互逻辑在 Windows 环境下使用 LVGL 模拟器完成验证。</p>
-        <div class="grid">
-            <div class="card">
+        <p style="color: var(--text-muted); text-align: center; margin-bottom: 40px; font-weight: 500;">脱离硬件束缚，前期 90% 的交互逻辑在 PC 模拟器完成验证。</p>
+        <div class="grid-3">
+            <div class="grid-3-item">
                 <img src="images/模拟器LVGL%20设置界面.png" alt="设置界面">
                 <p>设置功能页面</p>
             </div>
-            <div class="card">
+            <div class="grid-3-item">
                 <img src="images/模拟器LVGL%20通用数据界面.png" alt="数据页面">
                 <p>通用数据监测页</p>
             </div>
-            <div class="card">
+            <div class="grid-3-item">
                 <img src="images/获取并处理瓦片地图数据.png" alt="地图工具">
-                <p>瓦片地图数据抓取与处理</p>
+                <p>地图数据处理工具链</p>
             </div>
         </div>
     </section>
 
     <section>
         <h2>🛠️ 硬件移植与最终成品</h2>
-        <div class="grid">
-            <div class="card">
+        <div class="grid-3" style="grid-template-columns: 1fr 1fr;"> <div class="grid-3-item">
                 <img src="images/hardware_back.jpg" alt="硬件背面">
                 <p>内部电路板与排线布局</p>
             </div>
-            <div class="card">
+            <div class="grid-3-item">
                 <img src="images/黑金主题页面.jpg" alt="实机效果">
                 <p>硬件实机效果 (黑金模式)</p>
             </div>
