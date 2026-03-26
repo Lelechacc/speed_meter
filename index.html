@@ -6,17 +6,18 @@
     <title>STM32 + LVGL 智能自行车码表 | 项目展示</title>
     <style>
         :root { 
-            --primary: #00d2ff; 
-            --secondary: #3a7bd5;
-            --accent: #ff7e5f;
-            --text-main: #f0f4f8;
-            --text-muted: #a0aec0;
+            --primary: #ff9a9e;     /* 马卡龙粉 */
+            --secondary: #a1c4fd;   /* 婴儿蓝 */
+            --accent: #a8edea;      /* 薄荷青 */
+            --text-main: #4a4a4a;   /* 深灰字体，保证阅读清晰 */
+            --text-muted: #718096;
         }
         
-        /* 高级渐变背景 */
+        /* 糖果色渐变背景 */
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            /* 梦幻紫蓝渐变 */
+            background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
             background-attachment: fixed;
             color: var(--text-main); 
             line-height: 1.7; 
@@ -27,79 +28,89 @@
         .container { max-width: 960px; margin: 0 auto; padding: 50px 20px; }
         
         /* 顶部大标题样式 */
-        header { text-align: center; padding-bottom: 50px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        header { text-align: center; padding-bottom: 40px; }
         h1 { 
             font-size: 2.8em; 
-            background: linear-gradient(to right, #00d2ff, #3a7bd5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #2d3748;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.6);
             margin-bottom: 15px; 
             letter-spacing: 1px;
         }
-        header p { color: var(--text-muted); font-size: 1.1em; }
+        header p { color: var(--text-main); font-size: 1.1em; font-weight: 500; }
         .badges { margin: 25px 0; }
-        .badges img { margin: 0 6px; height: 28px; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .badges img { margin: 0 6px; height: 28px; border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         
-        /* 视频带炫酷发光阴影 */
+        /* 视频带毛玻璃发光边框 */
         .video-box { 
-            background: #000; 
-            border-radius: 16px; 
+            background: rgba(255, 255, 255, 0.2); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px; 
             overflow: hidden; 
-            box-shadow: 0 15px 35px rgba(0, 210, 255, 0.15); 
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15); 
             margin: 50px 0; 
-            border: 1px solid rgba(255,255,255,0.1); 
+            border: 2px solid rgba(255,255,255,0.5); 
+            padding: 10px;
         }
-        video { width: 100%; display: block; }
+        video { width: 100%; display: block; border-radius: 12px; }
 
         /* 章节标题 */
         h2 { 
-            border-left: 5px solid var(--primary); 
-            padding-left: 18px; 
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #2b6cb0; 
             margin-top: 60px; 
-            font-size: 1.8em;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            font-size: 1.6em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.6);
         }
-        h3 { color: var(--primary); margin-top: 35px; font-size: 1.3em; }
+        h3 { color: #553c9a; margin-top: 35px; font-size: 1.3em; }
 
-        /* 网格卡片 - 科技感毛玻璃效果 */
+        /* 核心毛玻璃卡片 (Glassmorphism) */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 30px 0; }
         .card { 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 12px; 
+            background: rgba(255, 255, 255, 0.35); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px; 
             padding: 20px; 
             text-align: center; 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.6); 
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
             transition: all 0.3s ease; 
         }
         .card:hover { 
             transform: translateY(-8px); 
-            border-color: var(--primary); 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(31, 38, 135, 0.15);
         }
-        .card img { width: 100%; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.5); }
-        .card p { font-size: 0.95em; color: var(--text-muted); margin: 0; font-weight: 500; }
+        .card img { width: 100%; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .card p { font-size: 1em; color: #2d3748; margin: 0; font-weight: 600; }
 
-        /* 技术详情列表框 */
+        /* 技术详情列表框（通透果冻感） */
         .tech-box { 
-            background: rgba(0, 0, 0, 0.3); 
+            background: rgba(255, 255, 255, 0.3); 
+            backdrop-filter: blur(10px);
             padding: 25px; 
-            border-radius: 12px; 
-            border-left: 4px solid var(--accent); 
+            border-radius: 16px; 
+            border-left: 5px solid #ff9a9e; 
             margin: 25px 0; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 1px solid rgba(255,255,255,0.6);
+            border-right: 1px solid rgba(255,255,255,0.6);
         }
-        .tech-box p { color: #d1d5db; }
-        code { background: #1f2937; padding: 3px 8px; border-radius: 6px; color: #fbbf24; font-family: monospace; }
+        .tech-box p { color: #4a5568; }
+        code { background: rgba(255,255,255,0.6); padding: 4px 10px; border-radius: 8px; color: #d53f8c; font-weight: bold; }
         
         ul { padding-left: 20px; }
-        li { margin-bottom: 10px; color: #d1d5db; }
-        li b { color: #fff; }
+        li { margin-bottom: 10px; color: #4a5568; }
+        li b { color: #2b6cb0; }
 
-        footer { text-align: center; padding: 60px 0 30px; color: #6b7280; font-size: 0.9em; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px;}
-        footer a { color: var(--primary); text-decoration: none; transition: 0.2s; }
-        footer a:hover { color: #fff; text-shadow: 0 0 8px var(--primary); }
+        footer { text-align: center; padding: 60px 0 30px; color: #718096; font-size: 0.95em; margin-top: 50px;}
+        footer a { color: #553c9a; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        footer a:hover { color: #ff9a9e; }
     </style>
 </head>
 <body>
@@ -116,7 +127,7 @@
     </header>
 
     <section>
-        <h2>📺 全功能实机演示 (Video Demo)</h2>
+        <h2>📺 全功能实机演示</h2>
         <div class="video-box">
             <video controls poster="images/实物路书页面.jpg">
                 <source src="images/demo_video.mp4" type="video/mp4">
@@ -126,7 +137,7 @@
     </section>
 
     <section>
-        <h2>🚀 核心交互亮点 (Highlights)</h2>
+        <h2>🚀 核心交互亮点</h2>
         <div class="grid">
             <div class="card">
                 <img src="images/语音切换.gif" alt="语言切换">
@@ -147,7 +158,7 @@
                 <ul>
                     <li><b>基础交互</b>：基于 LVGL 实现彩色 UI 界面。</li>
                     <li><b>本地化支持</b>：中英文切换 & 深浅模式实时切换。</li>
-                    <li><b>骑行数据</b>：实时显示速度、电量、卫星数等核心参数。</li>
+                    <li><b>骑行数据</b>：实时显示速度、电量、卫星数等。</li>
                     <li><b>地图导航</b>：支持局部 GPS 地图滚动与路书显示。</li>
                 </ul>
             </div>
@@ -169,19 +180,19 @@
         <div class="tech-box">
             <h3>难点一：地图动态铺设与 SPI 性能瓶颈</h3>
             <p>实现地图无缝滚动需采用“九宫格”加载机制。在算力受限的情况下，单张 256x256 的图片在 30Hz 刷新率下需要 3MB/s 的数据吞吐量。F405 的 CPU 直接推屏会出现严重卡顿。</p>
-            <p><b style="color:var(--primary);">解决方案：</b> 在硬件端考虑利用 <b>DMA2D 硬件图形加速器</b> 搬运数据，彻底解放 CPU 算力，实现地图画面的丝滑滑动。</p>
+            <p><b>解决方案：</b> 在硬件端考虑利用 <b>DMA2D 硬件图形加速器</b> 搬运数据，彻底解放 CPU 算力，实现地图画面的丝滑滑动。</p>
         </div>
 
         <div class="tech-box">
             <h3>难点二：数据绑定的线程安全问题</h3>
             <p>在定时器中断 (<code>timer_handler</code>) 中直接修改 UI 绑定的主题数据，会导致 LVGL 渲染线程冲突，极易引发单片机 <code>HardFault</code> 死机。</p>
-            <p><b style="color:var(--primary);">解决方案：</b> 引入 <code>lv_async_call()</code> 将修改动作委托给主循环；或引入 <b>FreeRTOS</b>，使用互斥锁（Mutex）严格控制 UI 更新与外设数据读取的时序。</p>
+            <p><b>解决方案：</b> 引入 <code>lv_async_call()</code> 将修改动作委托给主循环；或引入 <b>FreeRTOS</b>，使用互斥锁（Mutex）严格控制时序。</p>
         </div>
     </section>
 
     <section>
-        <h2>💻 PC 模拟器开发阶段 (Simulator)</h2>
-        <p style="color: var(--text-muted);">为了脱离硬件束缚，前期 90% 的交互逻辑在 Windows 环境下使用 LVGL 模拟器完成验证。</p>
+        <h2>💻 PC 模拟器开发阶段</h2>
+        <p style="color: var(--text-main); font-weight: 500; text-align: center; margin-bottom: 30px;">前期 90% 的交互逻辑在 Windows 环境下使用 LVGL 模拟器完成验证。</p>
         <div class="grid">
             <div class="card">
                 <img src="images/模拟器LVGL%20设置界面.png" alt="设置界面">
@@ -203,11 +214,11 @@
         <div class="grid">
             <div class="card">
                 <img src="images/hardware_back.jpg" alt="硬件背面">
-                <p>内部电路板与模块布局排线</p>
+                <p>内部电路板与排线布局</p>
             </div>
             <div class="card">
                 <img src="images/黑金主题页面.jpg" alt="实机效果">
-                <p>硬件实机显示效果 (黑金模式)</p>
+                <p>硬件实机效果 (黑金模式)</p>
             </div>
         </div>
     </section>
