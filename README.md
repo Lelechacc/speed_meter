@@ -64,7 +64,11 @@
 2. **打开工程**：使用 Keil MDK 打开 `MDK-ARM/speed_meter.uvprojx`。
 3. **编译烧录**：Rebuild 后通过 ST-Link 烧录至目标板。
 4. **获取固件**：也可在 [Releases](https://github.com/Lelechacc/speed_meter/releases) 页面直接下载 `.bin` 固件。
-
+---
+### ⚠️ 版权声明 (Copyright & Anti-Plagiarism)
+1. 本项目所有源码、文档、视频均为作者 **Lelechacc** 原创，严禁任何形式的造假（Resume Fraud）行为。
+2. 允许个人学习与参考，但未经授权禁止用于任何商业用途。
+3. 如果你在面试或商业演示中发现有人盗用本项目，请通过邮件联系我。
 ---
 
 © 2026 Developed by Lelechacc. | [GitHub 主页](https://github.com/Lelechacc)
