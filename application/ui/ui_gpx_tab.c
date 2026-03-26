@@ -431,7 +431,7 @@ void ui_map_center_wrapper(void *arg)
 //     if (sim_step_count <= 0) {
 //         lv_timer_pause(timer); 
 //         is_simulating = false;
-//         // 🚨 步数走完彻底停下，速度归零！
+//         //  步数走完彻底停下，速度归零！
 //         lv_subject_set_float(&ui->data.gps_speed, 0.0f); 
 //         printf("Simulation finished!\n");
 //         return;
@@ -441,7 +441,7 @@ void ui_map_center_wrapper(void *arg)
 
 //     // 节奏控制：走 5 步，停 3 步
 //     if (walk_pause_counter % 8 >= 5) {
-//         // 🚨 遇到红绿灯停下休息，速度瞬间归零！
+//         //  遇到红绿灯停下休息，速度瞬间归零！
 //         lv_subject_set_float(&ui->data.gps_speed, 0.0f); 
 //         return; 
 //     }
@@ -453,7 +453,7 @@ void ui_map_center_wrapper(void *arg)
 //     float current_lon = lv_subject_get_float(&ui->data.gps_longitude);
 //     float current_lat = lv_subject_get_float(&ui->data.gps_latitude);
     
-//     // 🚨 速度翻 10 倍！
+//     //  速度翻 10 倍！
 //     lv_subject_set_float(&ui->data.gps_longitude, current_lon + 0.0005f);
 //     lv_subject_set_float(&ui->data.gps_latitude, current_lat + 0.0005f);
 
@@ -472,7 +472,7 @@ void ui_map_center_wrapper(void *arg)
 //     float current_dist = lv_subject_get_float(&ui->data.gps_distance);
 //     lv_subject_set_float(&ui->data.gps_distance, current_dist + 0.1f);
 
-//     // 5. 🚨 核心联动：给界面发送实时速度！
+//     // 5.  核心联动：给界面发送实时速度！
 //     lv_subject_set_float(&ui->data.gps_speed, 45.5f); 
 // }
 
@@ -501,7 +501,7 @@ void ui_map_center_wrapper(void *arg)
 //         if (gps_sim_timer != NULL) {
 //             lv_timer_pause(gps_sim_timer);
 //         }
-//         // 🚨 强行暂停时，也要把面板上的速度归零
+//         //  强行暂停时，也要把面板上的速度归零
 //         lv_subject_set_float(&ui->data.gps_speed, 0.0f); 
 //         printf("Simulation Paused!\n");
 //     }
@@ -518,7 +518,7 @@ static void simulate_gps_timer_cb(lv_timer_t *timer)
 {
     ui_t *ui = (ui_t *)lv_timer_get_user_data(timer);
 
-    // 🚨 判断：如果步数走完了（10步），彻底刹车！
+    // 判断：如果步数走完了（10步），彻底刹车！
     if (sim_step_count <= 0) {
         lv_timer_pause(timer); 
         is_simulating = false;
@@ -535,7 +535,7 @@ static void simulate_gps_timer_cb(lv_timer_t *timer)
     float current_lon = lv_subject_get_float(&ui->data.gps_longitude);
     float current_lat = lv_subject_get_float(&ui->data.gps_latitude);
     
-    // 🚨 维持 10 倍速的位移差！
+    //  维持 10 倍速的位移差！
     lv_subject_set_float(&ui->data.gps_longitude, current_lon + 0.0005f);
     lv_subject_set_float(&ui->data.gps_latitude, current_lat + 0.0005f);
 
@@ -567,7 +567,7 @@ void ui_toggle_simulation_wrapper(void *arg)
     is_simulating = !is_simulating; // 切换状态
 
     if (is_simulating) {
-        // 🚨 核心修改：设定总共只移动 10 步 (刚好 5 秒)
+        //  核心修改：设定总共只移动 10 步 (刚好 5 秒)
         if (sim_step_count <= 0) {
             sim_step_count = 10;    
         }
