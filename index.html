@@ -6,28 +6,37 @@
     <title>STM32 + LVGL 全地形越野导航仪表 | 项目展示</title>
     <style>
         :root { 
-            /* 调整为半透明玻璃色值 */
-            --bg-main: #F5F5F7;
+            --bg-main: #F5F5F7;      /* 基础底色，防止图片加载失败 */
+            
+            /* --- 核心修改：让卡片背景变半透明 --- */
             --card-bg: rgba(255, 255, 255, 0.72); 
-            --text-main: #1D1D1F;
-            --text-muted: #86868B;
-            --accent-blue: #007AFF;
-            --border-color: rgba(210, 210, 215, 0.4);
+            
+            --text-main: #1D1D1F;    
+            --text-muted: #86868B;   
+            --accent-blue: #007AFF;  
+            --border-color: rgba(210, 210, 215, 0.4); /* 分割线也要淡一点 */
         }
         
         body { 
             font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; 
-            /* --- 背景修复：macOS 经典流体渐变 --- */
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%), 
-                        fixed url('images/bg.jpg'); /* 这里对应你转换后的背景图 */
-            background-size: cover;
-            background-blend-mode: overlay;
+            
+            /* ==========================================================
+               第一步：【彻底修复】在这加载你的图片背景
+               这里假设你的图片在 images 文件夹下，且 HTML 在项目根目录。
+               ========================================================== */
+            background-color: var(--bg-main); /* 保底颜色 */
+            background-image: url('images/2153816071994343424.jpg'); /* 加载你的图片 */
+            background-size: cover;          /* 图片铺满全屏，不拉伸 */
+            background-position: center;      /* 图片居中显示 */
+            background-attachment: fixed;    /* 核心：固定背景，滚动时只有内容动，极具大厂感 */
+            background-repeat: no-repeat;     /* 不重复 */
+            
             color: var(--text-main); 
             line-height: 1.5; 
             margin: 0; 
             padding: 0; 
-            min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            min-height: 100vh; /* 确保 body 有足够高度容纳背景 */
         }
 
         .container { max-width: 1080px; margin: 0 auto; padding: 60px 30px; position: relative; z-index: 2; }
@@ -46,7 +55,7 @@
         
         .video-section { margin: 60px 0; text-align: center; }
         .video-box { 
-            background: #fff; 
+            background: #fff; /* 视频区域白底 */
             border-radius: 20px; 
             overflow: hidden; 
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1); 
@@ -65,65 +74,54 @@
             margin-top: 80px; 
             margin-bottom: 30px;
             text-align: left;
+            letter-spacing: -0.2px;
         }
-
-        /* --- 玻璃拟态卡片优化 --- */
-        .bento-item, .list-card, .tech-box, .grid-3-item {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255,255,255,0.4);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-        }
+        h3 { color: var(--text-main); margin-top: 0; font-size: 1.3em; font-weight: 600; }
 
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin: 30px 0; }
-        .bento-item { padding: 30px; text-align: center; transition: all 0.3s ease; }
-        .bento-item:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+        
+        /* ==========================================================
+           第二步：【核心魔法】所有卡片容器启用毛玻璃效果
+           包括 .bento-item, .list-card, .tech-box, .grid-3-item
+           ========================================================== */
+        .bento-item, .list-card, .tech-box, .grid-3-item {
+            background: var(--card-bg) !important; /* 强制使用半透明白底 */
+            
+            /* 💡 开启毛玻璃魔法：模糊背景 20px，饱和度提升 180% */
+            backdrop-filter: blur(20px) saturate(180%) !important; 
+            -webkit-backdrop-filter: blur(20px) saturate(180%) !important; /* 修复 Safari */
+            
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.4) !important; /* 亮色细边框 */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05) !important; /* 淡淡的阴影 */
+        }
+
+        .bento-item { text-align: center; transition: all 0.3s ease; padding: 30px; }
+        .bento-item:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.1) !important; }
         .bento-item img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
+        .bento-item p { font-size: 1.1em; color: var(--text-main); margin: 0; font-weight: 500; }
 
         .structured-list { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 30px; }
         .list-card { padding: 30px; }
-        li { margin-bottom: 12px; font-size: 1.05em; }
+        ul { padding-left: 18px; margin: 0; }
+        li { margin-bottom: 12px; color: var(--text-main); font-size: 1.05em;}
         li b { color: var(--accent-blue); }
 
         .tech-box { padding: 25px; margin: 25px 0; }
         .tech-box h3 { color: var(--accent-blue); margin-bottom: 10px; }
-
+        .tech-box p { color: var(--text-main); margin-bottom: 0;}
+        
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 30px 0; }
         .grid-3-item { padding: 20px; text-align: center; }
         .grid-3-item img { width: 100%; border-radius: 8px; margin-bottom: 15px; }
+        .grid-3-item p { font-size: 0.95em; color: var(--text-main); margin: 0; font-weight: 500; }
 
-        /* --- 悬浮音乐组件样式 --- */
-        .music-widget {
-            position: fixed; bottom: 30px; right: 30px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(15px);
-            padding: 12px 20px; border-radius: 50px;
-            display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
-            z-index: 1000;
-        }
-        .music-info { font-size: 13px; font-weight: 600; color: #1d1d1f; }
-        .play-btn { 
-            background: var(--accent-blue); color: white; border: none; 
-            padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 12px;
-        }
-
-        footer { text-align: center; padding: 60px 0 30px; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 80px;}
-        footer a { color: var(--accent-blue); text-decoration: none; font-weight: 600; }
+        footer { text-align: center; padding: 60px 0 30px; color: var(--text-muted); font-size: 1em; border-top: 1px solid var(--border-color); margin-top: 80px;}
+        footer a { color: var(--accent-blue); text-decoration: none; font-weight: 600; transition: 0.2s; }
+        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-
-<div class="music-widget">
-    <div class="music-info">🎵 Sony WH-1000XM4 Hi-Res Mode</div>
-    <audio id="bg-music" loop>
-        <source src="music/bg.mp3" type="audio/mpeg">
-    </audio>
-    <button onclick="toggleMusic()" id="music-btn" class="play-btn">播放</button>
-</div>
 
 <div class="container">
     <header>
@@ -167,16 +165,16 @@
                 <ul>
                     <li><b>离线地图</b>：基于墨卡托投影的局部 GPS 地图映射。</li>
                     <li><b>姿态感知</b>：集成陀螺仪，实时解算坡度与朝向。</li>
-                    <li><b>性能调优</b>：支持深浅模式与中英双语动态切换。</li>
-                    <li><b>数据融合</b>：实时显示速度、经纬度及电池电压。</li>
+                    <li><b>硬件优化</b>：支持深浅模式与中英双语动态切换。</li>
+                    <li><b>数据融合</b>：实时显示速度、经纬度、卫星数与电量。</li>
                 </ul>
             </div>
             <div class="list-card">
                 <h3>硬件配置</h3>
                 <ul>
                     <li><b>主控</b>：STM32F405RGT6 (Cortex-M4, 168MHz)</li>
-                    <li><b>存储</b>：SD Card (SDIO总线) 存放离线瓦片地图</li>
-                    <li><b>显示</b>：240*320 TFT (ST7789驱动) + 电容触摸</li>
+                    <li><b>存储</b>：SD Card (SDIO总线) 存放离线地图瓦片</li>
+                    <li><b>屏幕</b>：240*320 TFT (ST7789驱动) + 电容触摸</li>
                     <li><b>传感</b>：ATGM336H (GPS) + LSM6DSM (六轴陀螺仪)</li>
                 </ul>
             </div>
@@ -185,22 +183,48 @@
 
     <section>
         <h2>🔥 技术难点攻坚</h2>
+        
         <div class="tech-box">
             <h3>难点一：SDIO+DMA 地图动态调度机制</h3>
-            <p>为解决单片机 SRAM 无法承载高清离线地图的瓶颈，设计了“九宫格”加载机制。通过 <b>SDIO 结合 DMA</b> 直接从外部存储提取像素并推入显示缓冲区，避开文件系统瓶颈。</p>
+            <p>为解决单片机 SRAM 无法承载高清离线地图的瓶颈，设计了“九宫格”加载机制。通过 <b>SDIO 结合 DMA</b> 直接从外部存储提取 BMP 原始像素并推入显示缓冲区，避开文件系统瓶颈。</p>
         </div>
+
         <div class="tech-box">
             <h3>难点二：数据平滑滤波与线程安全</h3>
-            <p>针对颠簸环境下的姿态抖动，引入了 <b>滑动平均滤波算法</b> 净化采样；同时利用 <code>lv_async_call()</code> 隔离外设中断，彻底规避了高频数据抢占导致的死锁问题。</p>
+            <p>针对颠簸环境下的姿态抖动，引入了 <b>滑动平均滤波算法</b> 净化采样；同时利用 <code>lv_async_call()</code> 机制隔离外设中断，彻底规避了高频数据抢占导致的死锁问题。</p>
         </div>
     </section>
 
     <section>
         <h2>💻 PC 模拟器验证阶段</h2>
+        <p style="color: rgba(29,29,31,0.7); text-align: center; margin-bottom: 40px; font-weight: 500;">前期 90% 的业务逻辑在 Windows 模拟环境下完成验证。</p>
         <div class="grid-3">
-            <div class="grid-3-item"><img src="images/1.png" alt="1"><p>设置交互层</p></div>
-            <div class="grid-3-item"><img src="images/2.png" alt="2"><p>监测数据页</p></div>
-            <div class="grid-3-item"><img src="images/3.png" alt="3"><p>地图处理链</p></div>
+            <div class="grid-3-item">
+                <img src="images/1.png" alt="1">
+                <p>设置交互层</p>
+            </div>
+            <div class="grid-3-item">
+                <img src="images/2.png" alt="2">
+                <p>监测数据页</p>
+            </div>
+            <div class="grid-3-item">
+                <img src="images/3.png" alt="3">
+                <p>地图处理链</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>🛠️ 硬件打样与最终实机</h2>
+        <div class="grid-3" style="grid-template-columns: 1fr 1fr;"> 
+            <div class="grid-3-item">
+                <img src="images/hardware_back.jpg" alt="硬件背面">
+                <p>内部电路与排线布局</p>
+            </div>
+            <div class="grid-3-item">
+                <img src="images/黑金主题页面.jpg" alt="实机效果">
+                <p>硬件实机运行 (深色模式)</p>
+            </div>
         </div>
     </section>
 
@@ -209,20 +233,6 @@
         <p><a href="https://github.com/Lelechacc/speed_meter" target="_blank">View Repository on GitHub</a></p>
     </footer>
 </div>
-
-<script>
-    function toggleMusic() {
-        var music = document.getElementById("bg-music");
-        var btn = document.getElementById("music-btn");
-        if (music.paused) {
-            music.play();
-            btn.innerHTML = "暂停";
-        } else {
-            music.pause();
-            btn.innerHTML = "播放";
-        }
-    }
-</script>
 
 </body>
 </html>
